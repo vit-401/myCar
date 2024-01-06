@@ -16,6 +16,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {useNavigate, useParams} from "react-router-dom";
 import {appAPI} from "../../api/app-api";
 import useLocalStorage from "../../hooks/useLocalStorage";
+import LinearWithValueLabel from "../Loder";
 
 
 function formatterFunction(text) {
@@ -139,7 +140,10 @@ const [loader, setLoader] = useState(false)
     const car = carsData.find(car => car.id === carId)
     if (car) {
       const prompt = createPrompt(car.carModel, car.carYear, car.carCompany)
+      setLoader(true)
       const resp = await appAPI.sendGPTPrompt(prompt)
+      setLoader(false)
+
       const content = resp.choices[0].message.content
       const formatedJson = formatterFunction(content)
 
@@ -165,6 +169,7 @@ const [loader, setLoader] = useState(false)
   };
   const handleClose = () => setOpen(false);
   return <>
+  {loader ? <LinearWithValueLabel/> : null}
     <div
       style={{display: "flex", justifyContent: "space-between", marginTop: '10px'}}
     >
